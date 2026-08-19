@@ -1,0 +1,34 @@
+{
+  "response": {
+    "numFound": 1,
+    "docs": [
+      {
+        "bibcode": "2023MNRAS.524..835R",
+        "title": ["Awesome SOSS: transmission spectroscopy of WASP-96b with NIRISS/SOSS"],
+        "author": [
+          "Radica, Michael",
+          "Welbanks, Luis",
+          "Espinoza, Néstor",
+          "Taylor, Jake",
+          "Coulombe, Louis-Philippe",
+          "Feinstein, Adina D.",
+          "Goyal, Jayesh",
+          "Scarsdale, Nicholas",
+          "Baghel, Priyanka",
+          "Albert, Loïc",
+          "Bean, Jacob L.",
+          "Blecic, Jasmina",
+          "Lafrenière, David"
+        ],
+        "first_author": "Radica, Michael",
+        "year": "2023",
+        "pub": "Monthly Notices of the Royal Astronomical Society",
+        "volume": "524",
+        "page": ["835"],
+        "doi": ["10.1093/mnras/stad1762"],
+        "identifier": ["arXiv:2305.17001"],
+        "pubdate": "2023-09-00"
+      }
+    ]
+  }
+}

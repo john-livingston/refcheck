@@ -1,0 +1,20 @@
+{
+  "response": {
+    "numFound": 1,
+    "docs": [
+      {
+        "bibcode": "2014ApJ...797L..25R",
+        "title": ["The Habitable Zones of Pre-main-sequence Stars"],
+        "author": ["Ramirez, Ramses M.", "Kaltenegger, Lisa"],
+        "first_author": "Ramirez, Ramses M.",
+        "year": "2014",
+        "pub": "The Astrophysical Journal Letters",
+        "volume": "797",
+        "page": ["L25"],
+        "doi": ["10.1088/2041-8205/797/2/L25"],
+        "identifier": ["arXiv:1412.1764"],
+        "pubdate": "2014-12-00"
+      }
+    ]
+  }
+}

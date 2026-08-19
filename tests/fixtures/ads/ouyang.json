@@ -1,0 +1,20 @@
+{
+  "response": {
+    "numFound": 1,
+    "docs": [
+      {
+        "bibcode": "2025ApJ...985L..43O",
+        "title": ["Retention of Surface Water on Tidally Locked Rocky Planets in the Venus Zone around M Dwarfs"],
+        "author": ["Ouyang, Yueyun", "Ding, Feng", "Yang, Jun"],
+        "first_author": "Ouyang, Yueyun",
+        "year": "2025",
+        "pub": "The Astrophysical Journal Letters",
+        "volume": "985",
+        "page": ["43"],
+        "doi": ["10.3847/2041-8213/adda4b"],
+        "identifier": ["arXiv:2505.13066"],
+        "pubdate": "2025-06-00"
+      }
+    ]
+  }
+}
