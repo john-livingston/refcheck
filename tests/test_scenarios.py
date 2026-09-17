@@ -53,7 +53,7 @@ def test_required_recorded_scenarios_are_safe_and_complete(
     ads = FixtureADS(fixture_dir)
 
     run = check_entries(entries, Resolver(ads), ads)
-    write_outputs(run, tmp_path)
+    write_outputs(run, tmp_path, bibcode_keys=True)
 
     assert [result.verdict for result in run.results] == [
         Verdict.CONFIRMED,
@@ -107,6 +107,7 @@ def test_run_check_orchestrates_parser_resolver_export_and_outputs(
             output_dir=output_dir,
             cache_dir=tmp_path / "cache",
             ads_token="test-token",
+            bibcode_keys=True,
         )
     )
 

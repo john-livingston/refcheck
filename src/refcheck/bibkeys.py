@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from collections import Counter
 from collections.abc import Sequence
 
@@ -22,13 +23,24 @@ def _suffix(ordinal: int) -> str:
     return "".join(reversed(chars))
 
 
+def _ascii_lower(value: str) -> str:
+    """Transliterate to lowercase ASCII letters and digits (Oberg, molliere)."""
+
+    text = unicodedata.normalize("NFKD", value)
+    text = "".join(char for char in text if not unicodedata.combining(char))
+    return "".join(
+        char.lower() for char in text if char.isascii() and char.isalnum()
+    )
+
+
 def _slug(record: ADSRecord) -> str | None:
-    """Return the first-author surname plus year key, or None if unavailable."""
+    """Return the ASCII-lowercase first-author surname plus year key (oberg2011),
+    or None when the surname has no usable letters or the year is missing."""
 
     if record.year is None or not record.first_author:
         return None
     surname = re.sub(
-        r"\s+", "", latex_to_text(record.first_author.split(",", 1)[0])
+        r"\s+", "", _ascii_lower(latex_to_text(record.first_author.split(",", 1)[0]))
     )
     if not surname:
         return None

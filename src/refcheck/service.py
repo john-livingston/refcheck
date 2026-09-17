@@ -61,9 +61,7 @@ def run_check(config: RunConfig) -> RunResult:
             ads,
             use_llm=config.use_llm,
         )
-        write_outputs(
-            run, config.output_dir, author_year_keys=config.author_year_keys
-        )
+        write_outputs(run, config.output_dir, bibcode_keys=config.bibcode_keys)
         return run
     finally:
         ads.close()

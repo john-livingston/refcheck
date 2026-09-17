@@ -58,7 +58,7 @@ def _report(run: RunResult) -> str:
 
 
 def write_outputs(
-    run: RunResult, output_dir: Path, *, author_year_keys: bool = False
+    run: RunResult, output_dir: Path, *, bibcode_keys: bool = False
 ) -> None:
     """Write stable result artifacts while preserving the request trace."""
 
@@ -69,7 +69,7 @@ def write_outputs(
         "results": [result.model_dump(mode="json") for result in run.results],
     }
     corrected_bib = run.corrected_bib
-    if author_year_keys:
+    if not bibcode_keys:
         corrected_bib = rewrite_bibtex_keys(
             corrected_bib,
             [result.record for result in run.results if result.record is not None],

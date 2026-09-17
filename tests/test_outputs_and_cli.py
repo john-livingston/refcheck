@@ -26,7 +26,7 @@ def test_writes_all_artifacts_with_verbatim_bibtex(
     )
     (tmp_path / "trace.jsonl").write_text('{"existing":true}\n', encoding="utf-8")
 
-    write_outputs(run, tmp_path)
+    write_outputs(run, tmp_path, bibcode_keys=True)
 
     assert (tmp_path / "corrected.bib").read_text(encoding="utf-8") == corrected_bib
     payload = json.loads((tmp_path / "results.json").read_text(encoding="utf-8"))
@@ -124,7 +124,7 @@ def test_cli_exit_codes_gate_unverified_entries(
         assert main([str(source)]) == 1
 
 
-def test_author_year_keys_rewrites_corrected_bib(
+def test_write_outputs_rewrites_author_year_keys_by_default(
     tmp_path, source_factory, record_factory
 ):
     corrected_bib = (
@@ -144,17 +144,42 @@ def test_author_year_keys_rewrites_corrected_bib(
         corrected_bib=corrected_bib,
     )
 
-    write_outputs(run, tmp_path, author_year_keys=True)
+    write_outputs(run, tmp_path)
 
     assert (tmp_path / "corrected.bib").read_text(encoding="utf-8") == (
-        "@ARTICLE{Ouyang2025,\n"
+        "@ARTICLE{ouyang2025,\n"
         "       author = {{Ouyang}, Yueyun},\n"
         "         year = 2025\n"
         "}\n"
     )
 
 
-def test_cli_passes_author_year_keys_flag(tmp_path, monkeypatch):
+def test_bibcode_keys_option_keeps_verbatim_export(
+    tmp_path, source_factory, record_factory
+):
+    corrected_bib = (
+        "@ARTICLE{2025ApJ...985L..43O,\n"
+        "       author = {{Ouyang}, Yueyun},\n"
+        "         year = 2025\n"
+        "}\n"
+    )
+    run = RunResult(
+        results=[
+            Resolution(
+                source=source_factory(),
+                verdict=Verdict.CONFIRMED,
+                record=record_factory(),
+            )
+        ],
+        corrected_bib=corrected_bib,
+    )
+
+    write_outputs(run, tmp_path, bibcode_keys=True)
+
+    assert (tmp_path / "corrected.bib").read_text(encoding="utf-8") == corrected_bib
+
+
+def test_cli_passes_bibcode_keys_flag(tmp_path, monkeypatch):
     source = tmp_path / "references.bbl"
     source.write_text("placeholder", encoding="utf-8")
     monkeypatch.setenv("ADS_TOKEN", "ads")
@@ -162,12 +187,12 @@ def test_cli_passes_author_year_keys_flag(tmp_path, monkeypatch):
     flags = []
 
     def capture(config):
-        flags.append(config.author_year_keys)
+        flags.append(config.bibcode_keys)
         return RunResult(results=[])
 
     monkeypatch.setattr("refcheck.cli.run_check", capture)
 
-    assert main([str(source), "--author-year-keys"]) == 0
+    assert main([str(source), "--bibcode-keys"]) == 0
     assert main([str(source)]) == 0
 
     assert flags == [True, False]

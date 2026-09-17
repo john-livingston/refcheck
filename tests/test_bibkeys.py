@@ -19,7 +19,7 @@ def _bib(keys: list[str]) -> str:
     for key in keys:
         entries.append(
             "@ARTICLE{" + key + ",\n"
-            "       author = {{Ouyang}, Yueyun},\n"
+            "       author = {Ouyang}, Yueyun},\n"
             "         year = 2025\n"
             "}"
         )
@@ -36,7 +36,7 @@ def test_distinct_surnames_keep_plain_base_keys():
 
     rewritten = rewrite_bibtex_keys(corrected, records)
 
-    assert rewritten == _bib(["Ouyang2025", "Ramirez2025", "Murphy2025"])
+    assert rewritten == _bib(["ouyang2025", "ramirez2025", "murphy2025"])
 
 
 def test_duplicates_in_same_surname_year_get_letters():
@@ -50,7 +50,28 @@ def test_duplicates_in_same_surname_year_get_letters():
 
     rewritten = rewrite_bibtex_keys(corrected, records)
 
-    assert rewritten == _bib(["Murphy2026a", "Murphy2026b", "Murphy2026c", "Ouyang2025"])
+    assert rewritten == _bib(["murphy2026a", "murphy2026b", "murphy2026c", "ouyang2025"])
+
+
+def test_non_ascii_surnames_are_transliterated_to_ascii():
+    corrected = _bib(["2011ApJ...742....2Ö", "2022A&A...664A.132M"])
+    records = [
+        _record("2011ApJ...742....2Ö", first_author="Öberg, Karin I.", year=2011),
+        _record("2022A&A...664A.132M", first_author="Mollière, Paul", year=2022),
+    ]
+
+    rewritten = rewrite_bibtex_keys(corrected, records)
+
+    assert rewritten == _bib(["oberg2011", "molliere2022"])
+
+
+def test_surname_without_ascii_letters_keeps_exported_key():
+    corrected = _bib(["2025ApJ...985L..43O"])
+    records = [_record("2025ApJ...985L..43O", first_author="张, 伟")]
+
+    rewritten = rewrite_bibtex_keys(corrected, records)
+
+    assert rewritten == _bib(["2025ApJ...985L..43O"])
 
 
 def test_missing_first_author_keeps_exported_key():
@@ -94,6 +115,6 @@ def test_body_is_preserved_verbatim_except_key():
 
     rewritten = rewrite_bibtex_keys(corrected, records)
 
-    assert rewritten.startswith("@ARTICLE{Ouyang2025,")
+    assert rewritten.startswith("@ARTICLE{ouyang2025,")
     for original, renamed in zip(corrected.splitlines(), rewritten.splitlines()):
-        assert original.replace("2025ApJ...985L..43O", "Ouyang2025") == renamed
+        assert original.replace("2025ApJ...985L..43O", "ouyang2025") == renamed

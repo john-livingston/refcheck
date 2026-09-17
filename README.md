@@ -28,10 +28,10 @@ Each run writes:
 
 * `report.md`, the readable verdict and correction report
 * `results.json`, structured and versioned results
-* `corrected.bib`, verbatim BibTeX returned by ADS
+* `corrected.bib`, first-author surname plus year citation keys (e.g. `oberg2011`, `molliere2022a`) instead of ADS bibcode keys
 * `trace.jsonl`, credential-free request and response events
 
-`--author-year-keys` writes `corrected.bib` with first-author surname plus year citation keys (e.g. `Murphy2026`, `Murphy2026a`) instead of ADS bibcode keys.
+`--bibcode-keys` keeps the ADS bibcode-derived citation keys in `corrected.bib` instead.
 
 The persistent `.refcheck-cache` avoids repeated ADS queries. Cached responses do not consume the current quota. The client stops new requests when ADS reports no remaining requests.
 

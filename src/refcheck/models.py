@@ -145,6 +145,6 @@ class RunConfig(StrictModel):
     cache_dir: Path
     ads_token: SecretStr
     use_llm: bool = False
-    author_year_keys: bool = False
+    bibcode_keys: bool = False
     openrouter_api_key: SecretStr | None = None
     openrouter_model: str | None = None
