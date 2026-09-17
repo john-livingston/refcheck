@@ -211,5 +211,5 @@ class ADSClient:
     def export_bibtex(self, bibcodes: list[str]) -> str:
         if not bibcodes:
             return ""
-        request = {"bibcode": bibcodes}
+        request = {"bibcode": bibcodes, "sort": "no sort"}
         return self._request("POST", EXPORT_PATH, request, self._parse_export)

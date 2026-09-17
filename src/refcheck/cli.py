@@ -36,6 +36,14 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Enable constrained OpenRouter assistance after deterministic resolution",
     )
+    parser.add_argument(
+        "--author-year-keys",
+        action="store_true",
+        help=(
+            "Use first-author surname plus year citation keys (e.g. Murphy2026) "
+            "in corrected.bib; same-year duplicates get a, b, ... suffixes"
+        ),
+    )
     parser.add_argument("--version", action="version", version=__version__)
     return parser
 
@@ -64,6 +72,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         cache_dir=args.cache_dir,
         ads_token=ads_token,
         use_llm=args.llm,
+        author_year_keys=args.author_year_keys,
         openrouter_api_key=openrouter_api_key,
         openrouter_model=openrouter_model,
     )

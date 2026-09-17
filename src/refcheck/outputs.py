@@ -6,6 +6,7 @@ import tempfile
 from collections import Counter
 from pathlib import Path
 
+from refcheck.bibkeys import rewrite_bibtex_keys
 from refcheck.models import RunResult, Verdict
 
 
@@ -56,7 +57,9 @@ def _report(run: RunResult) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def write_outputs(run: RunResult, output_dir: Path) -> None:
+def write_outputs(
+    run: RunResult, output_dir: Path, *, author_year_keys: bool = False
+) -> None:
     """Write stable result artifacts while preserving the request trace."""
 
     output_dir = Path(output_dir)
@@ -65,10 +68,16 @@ def write_outputs(run: RunResult, output_dir: Path) -> None:
         "schema_version": run.schema_version,
         "results": [result.model_dump(mode="json") for result in run.results],
     }
+    corrected_bib = run.corrected_bib
+    if author_year_keys:
+        corrected_bib = rewrite_bibtex_keys(
+            corrected_bib,
+            [result.record for result in run.results if result.record is not None],
+        )
     _atomic_write(output_dir / "report.md", _report(run))
     _atomic_write(
         output_dir / "results.json",
         json.dumps(result_payload, ensure_ascii=False, indent=2) + "\n",
     )
-    _atomic_write(output_dir / "corrected.bib", run.corrected_bib)
+    _atomic_write(output_dir / "corrected.bib", corrected_bib)
     (output_dir / "trace.jsonl").touch(exist_ok=True)

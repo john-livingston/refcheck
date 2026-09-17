@@ -120,7 +120,10 @@ def test_export_posts_bibcodes_and_returns_verbatim(tmp_path):
     assert len(requests) == 1
     assert requests[0].method == "POST"
     assert requests[0].url.path == "/v1/export/bibtex"
-    assert json.loads(requests[0].content) == {"bibcode": ["one", "two"]}
+    assert json.loads(requests[0].content) == {
+        "bibcode": ["one", "two"],
+        "sort": "no sort",
+    }
 
 
 @pytest.mark.parametrize(

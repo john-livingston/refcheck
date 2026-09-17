@@ -122,3 +122,52 @@ def test_cli_exit_codes_gate_unverified_entries(
         )
         monkeypatch.setattr("refcheck.cli.run_check", lambda config, run=failed: run)
         assert main([str(source)]) == 1
+
+
+def test_author_year_keys_rewrites_corrected_bib(
+    tmp_path, source_factory, record_factory
+):
+    corrected_bib = (
+        "@ARTICLE{2025ApJ...985L..43O,\n"
+        "       author = {{Ouyang}, Yueyun},\n"
+        "         year = 2025\n"
+        "}\n"
+    )
+    run = RunResult(
+        results=[
+            Resolution(
+                source=source_factory(),
+                verdict=Verdict.CONFIRMED,
+                record=record_factory(),
+            )
+        ],
+        corrected_bib=corrected_bib,
+    )
+
+    write_outputs(run, tmp_path, author_year_keys=True)
+
+    assert (tmp_path / "corrected.bib").read_text(encoding="utf-8") == (
+        "@ARTICLE{Ouyang2025,\n"
+        "       author = {{Ouyang}, Yueyun},\n"
+        "         year = 2025\n"
+        "}\n"
+    )
+
+
+def test_cli_passes_author_year_keys_flag(tmp_path, monkeypatch):
+    source = tmp_path / "references.bbl"
+    source.write_text("placeholder", encoding="utf-8")
+    monkeypatch.setenv("ADS_TOKEN", "ads")
+    monkeypatch.setattr("refcheck.cli.load_dotenv", lambda: False)
+    flags = []
+
+    def capture(config):
+        flags.append(config.author_year_keys)
+        return RunResult(results=[])
+
+    monkeypatch.setattr("refcheck.cli.run_check", capture)
+
+    assert main([str(source), "--author-year-keys"]) == 0
+    assert main([str(source)]) == 0
+
+    assert flags == [True, False]
