@@ -66,6 +66,18 @@ def test_search_contract_cache_trace_and_secret_safety(tmp_path, record_factory)
     assert "ads-super-secret" not in persisted
 
 
+def test_search_ignores_unrequested_fields(tmp_path, record_factory):
+    # ADS can return fields beyond the requested fl list (e.g. publisher).
+    payload = _search_payload(record_factory)
+    payload["response"]["docs"][0]["publisher"] = "IOP"
+
+    client = _client(tmp_path, lambda request: httpx.Response(200, json=payload))
+
+    response = client.search("x")
+
+    assert response.records[0].bibcode == "2025ApJ...985L..43O"
+
+
 def test_zero_remaining_allows_cache_but_blocks_new_request(tmp_path, record_factory):
     calls = 0
 

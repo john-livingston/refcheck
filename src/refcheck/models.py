@@ -61,6 +61,9 @@ class SourceEntry(StrictModel):
 
 
 class ADSRecord(StrictModel):
+    # ADS may return fields beyond the requested fl list, so drop unknown keys.
+    model_config = ConfigDict(extra="ignore")
+
     bibcode: str
     title: str = ""
     author: list[str] = Field(default_factory=list)
